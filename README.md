@@ -1,8 +1,12 @@
 # Chat-Your-Data
 
-Create a ChatGPT like experience over your custom docs using [LangChain](https://github.com/hwchase17/langchain).
+Create a ChatGPT like experience over your custom docs using [LangChain](https://github.com/hwchase17/langchain). This repo can help you use models hosted on HuggingFace for embedding and for text generation.
 
-See [this blog post](https://blog.langchain.dev/tutorial-chatgpt-over-your-data/) for a more detailed explanation.
+The explanation of [this blog post](https://blog.langchain.dev/tutorial-chatgpt-over-your-data/) can help you understand the reason for differnt files and the steps involved. We will primarily replace OpenAI API with huggingface based models.
+
+## Environment Variable
+Please set huggingface token as `huggingfacehub_api_token=[your-token]`. Token can be generated in the HuggingFace account settings.
+
 
 ## Ingest data
 

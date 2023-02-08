@@ -1,6 +1,10 @@
 from langchain.prompts.prompt import PromptTemplate
-from langchain.llms import OpenAI
+from langchain.llms import OpenAI, HuggingFacePipeline, HuggingFaceHub
 from langchain.chains import ChatVectorDBChain
+import os
+from dotenv import load_dotenv
+load_dotenv()
+huggingfacehub_api_token =  os.environ.get('huggingfacehub_api_token')
 
 _template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
 You can assume the question about the most recent state of the union address.
@@ -22,9 +26,8 @@ Question: {question}
 Answer in Markdown:"""
 QA_PROMPT = PromptTemplate(template=template, input_variables=["question", "context"])
 
-
 def get_chain(vectorstore):
-    llm = OpenAI(temperature=0)
+    llm = HuggingFaceHub(repo_id="google/flan-t5-large", huggingfacehub_api_token=huggingfacehub_api_token, model_kwargs={"temperature":1e-10})
     qa_chain = ChatVectorDBChain.from_llm(
         llm,
         vectorstore,

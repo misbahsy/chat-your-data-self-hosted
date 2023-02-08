@@ -10,14 +10,14 @@ with open("vectorstore.pkl", "rb") as f:
     vectorstore = pickle.load(f)
 
 
-def set_openai_api_key(api_key: str):
+def set_hf_token(api_key: str):
     """Set the api key and return chain.
     If no api_key, then None is returned.
     """
     if api_key:
-        os.environ["OPENAI_API_KEY"] = api_key
+        os.environ["hf_token"] = api_key
         chain = get_chain(vectorstore)
-        os.environ["OPENAI_API_KEY"] = ""
+        os.environ["hf_token"] = ""
         return chain
 
 class ChatWrapper:
@@ -33,11 +33,11 @@ class ChatWrapper:
             history = history or []
             # If chain is None, that is because no API key was provided.
             if chain is None:
-                history.append((inp, "Please paste your OpenAI key to use"))
+                history.append((inp, "Please paste your HuggingFace token to use"))
                 return history, history
             # Set OpenAI key
-            import openai
-            openai.api_key = api_key
+            # import openai
+            # openai.api_key = api_key
             # Run chain and append input.
             output = chain({"question": inp, "chat_history": history})["answer"]
             history.append((inp, output))
@@ -55,8 +55,8 @@ with block:
     with gr.Row():
         gr.Markdown("<h3><center>Chat-Your-Data (State-of-the-Union)</center></h3>")
 
-        openai_api_key_textbox = gr.Textbox(
-            placeholder="Paste your OpenAI API key (sk-...)",
+        hf_token_textbox = gr.Textbox(
+            placeholder="Paste your HuggingFace Token (hf_...)",
             show_label=False,
             lines=1,
             type="password",
@@ -90,12 +90,12 @@ with block:
     state = gr.State()
     agent_state = gr.State()
 
-    submit.click(chat, inputs=[openai_api_key_textbox, message, state, agent_state], outputs=[chatbot, state])
-    message.submit(chat, inputs=[openai_api_key_textbox, message, state, agent_state], outputs=[chatbot, state])
+    submit.click(chat, inputs=[hf_token_textbox, message, state, agent_state], outputs=[chatbot, state])
+    message.submit(chat, inputs=[hf_token_textbox, message, state, agent_state], outputs=[chatbot, state])
 
-    openai_api_key_textbox.change(
-        set_openai_api_key,
-        inputs=[openai_api_key_textbox],
+    hf_token_textbox.change(
+        set_hf_token,
+        inputs=[hf_token_textbox],
         outputs=[agent_state],
     )
 
